@@ -57,7 +57,7 @@ public Action Witch_OnTakeDamage(int victim, int &attacker, int &inflictor, floa
 	if (GetEntPropFloat(victim, Prop_Send, "m_rage") >= 1.0)
 		return Plugin_Continue;
 	
-	if (GetClientTeam(attacker) != 2)
+	if (GetClientTeam(attacker) != 2) //Survivor team only
 		return Plugin_Continue;
 	
 	if (!IsFakeClient(attacker))
