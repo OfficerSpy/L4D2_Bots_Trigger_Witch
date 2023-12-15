@@ -13,7 +13,7 @@ public Plugin myinfo =
 	name = "[L4D2] Bots Startle Witch",
 	author = "Officer Spy",
 	description = "Lets bots startle the wandering witch.",
-	version = "1.0.0",
+	version = "1.0.1",
 	url = ""
 };
 
@@ -51,38 +51,22 @@ public void OnClientPutInServer(int client)
 
 public Action Witch_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	if (attacker == 0 || attacker > MaxClients)
-		return Plugin_Continue;
-	
 	if (GetEntPropFloat(victim, Prop_Send, "m_rage") >= 1.0)
 		return Plugin_Continue;
 	
-	if (GetClientTeam(attacker) != 2) //Survivor team only
-		return Plugin_Continue;
-	
-	if (!IsFakeClient(attacker))
-		return Plugin_Continue;
-	
-	g_bIsAttackingWitch[attacker] = true;
+	if (IsValidSurvivorBot(attacker))
+		g_bIsAttackingWitch[attacker] = true;
 	
 	return Plugin_Continue;
 }
 
 public void Witch_OnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype, int weapon, const float damageForce[3], const float damagePosition[3], int damagecustom)
 {
-	if (attacker == 0 || attacker > MaxClients)
-		return;
-	
 	if (GetEntPropFloat(victim, Prop_Send, "m_rage") >= 1.0)
 		return;
 	
-	if (GetClientTeam(attacker) != 2)
-		return;
-	
-	if (!IsFakeClient(attacker))
-		return;
-	
-	g_bIsAttackingWitch[attacker] = false;
+	if (IsValidSurvivorBot(attacker))
+		g_bIsAttackingWitch[attacker] = false;
 }
 
 public MRESReturn DHookCallback_IsBot_Post(int pThis, DHookReturn hReturn)
@@ -94,6 +78,17 @@ public MRESReturn DHookCallback_IsBot_Post(int pThis, DHookReturn hReturn)
 	}
 	
 	return MRES_Ignored;
+}
+
+bool IsValidSurvivorBot(int client)
+{
+	if (client < 1 || client > MaxClients)
+		return false;
+	
+	if (GetClientTeam(client) != 2) //Survivor team only
+		return false;
+	
+	return IsFakeClient(client);
 }
 
 /* NOTE: I actually suspect that the CBasePlayer::IsBot check is done
