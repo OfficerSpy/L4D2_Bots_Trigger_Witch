@@ -13,7 +13,7 @@ public Plugin myinfo =
 	name = "[L4D2] Bots Startle Witch",
 	author = "Officer Spy",
 	description = "Lets bots startle the wandering witch.",
-	version = "1.0.1",
+	version = "1.0.2",
 	url = ""
 };
 
@@ -62,9 +62,6 @@ public Action Witch_OnTakeDamage(int victim, int &attacker, int &inflictor, floa
 
 public void Witch_OnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype, int weapon, const float damageForce[3], const float damagePosition[3], int damagecustom)
 {
-	if (GetEntPropFloat(victim, Prop_Send, "m_rage") >= 1.0)
-		return;
-	
 	if (IsValidSurvivorBot(attacker))
 		g_bIsAttackingWitch[attacker] = false;
 }
